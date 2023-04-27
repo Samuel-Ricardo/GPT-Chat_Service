@@ -1,5 +1,10 @@
 package chatcompletionstream
 
+import (
+	"github.com/Samuel-Ricardo/GPT-Chat_Service/internal/domain/gateway"
+	"github.com/sashabaranov/go-openai"
+)
+
 type ChatCompletionConfigInputDTO struct {
 	Model                string
 	ModelMaxTokenx       int
@@ -24,4 +29,10 @@ type ChatCompletionOutputDTO struct {
 	ChatID  string
 	UserID  string
 	Content string
+}
+
+type ChatCompletionUseCase struct {
+	ChatGateway gateway.ChatGateway
+  OpenAIClient *openai.Client
+  Stream chan ChatCompletionOutputDTO
 }
