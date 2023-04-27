@@ -59,3 +59,8 @@ func (c *Chat) Validate() error {
 	// ... more validations for config
 	return nil
 }
+
+func (c *Chat) GetMessages() []*Message {
+	return c.Messages
+}
+
