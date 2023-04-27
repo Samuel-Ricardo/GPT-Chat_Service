@@ -46,6 +46,25 @@ func NewChat(userID string, initialSystemMessage *Message, chatConfig *ChatConfi
 }
 
 
+func (c *Chat) AddMessage(m *Message) error {
+  if c.Status == "ended" {
+    return errors.New("chat is ended. no more messages allowed")
+  }
+
+  for {
+    if c.Config.Model.GetMaxTokens() >= m.GetQtdTokens() {
+      c.Messages = append(c.Messages, m)
+      c.RefreshTokenUsage()
+      break
+    }
+    c.ErasedMessages = append(c.ErasedMessages, c.Messages[0])
+    c.Messages = c.Messages[1:]
+    c.RefreshTokenUsage()
+  }
+
+  return nil
+}
+
 func (c *Chat) Validate() error {
 	if c.UserID == "" {
 		return errors.New("user id is empty")
