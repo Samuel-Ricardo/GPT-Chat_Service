@@ -46,3 +46,6 @@ func (m *Message) Validate() error {
 	return nil
 }
 
+func (m *Message) GetQtdTokens() int {
+	return m.Tokens
+}
