@@ -19,3 +19,9 @@ type ChatCompletionInputDTO struct {
 	UserMessage string
 	Config      ChatCompletionConfigInputDTO
 }
+
+type ChatCompletionOutputDTO struct {
+	ChatID  string
+	UserID  string
+	Content string
+}
