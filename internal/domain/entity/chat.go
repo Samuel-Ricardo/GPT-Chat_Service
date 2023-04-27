@@ -1,5 +1,11 @@
 package entity
 
+import (
+	"errors"
+
+	"github.com/google/uuid"
+)
+
 type ChatConfig struct {
 	Model            *Model
 	Temperature      float32  // 0.0 to 1.0
@@ -14,10 +20,26 @@ type ChatConfig struct {
 type Chat struct {
 	ID                   string
 	UserID               string
-	InitialSystrmMessage *Message
+	InitialSystemMessage *Message
 	Messages             []*Message
 	ErasedMessages       []*Message
 	Status               string
 	TokenUsage           int
 	Config               *ChatConfig
+}
+
+
+
+func (c *Chat) Validate() error {
+	if c.UserID == "" {
+		return errors.New("user id is empty")
+	}
+	if c.Status != "active" && c.Status != "ended" {
+		return errors.New("invalid status")
+	}
+	if c.Config.Temperature < 0 || c.Config.Temperature > 2 {
+		return errors.New("invalid temperature")
+	}
+	// ... more validations for config
+	return nil
 }
