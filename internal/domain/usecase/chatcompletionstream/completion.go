@@ -1,7 +1,10 @@
 package chatcompletionstream
 
 import (
+	"context"
 	"errors"
+	"io"
+	"strings"
 
 	"github.com/Samuel-Ricardo/GPT-Chat_Service/internal/domain/entity"
 	"github.com/Samuel-Ricardo/GPT-Chat_Service/internal/domain/gateway"
@@ -46,6 +49,110 @@ func NewChatCompletionUseCase(chatGateway gateway.ChatGateway, openAiClient *ope
     OpenAIClient: openAiClient,
     Stream: stream,
   }
+}
+
+func (useCase *ChatCompletionUseCase) Execute (ctx context.Context, input ChatCompletionInputDTO) (*ChatCompletionInputDTO, error) {
+  chat, err := useCase.ChatGateway.FindChatByID(ctx, input.ChatID)
+  
+  if err != nil {
+    
+    if err.Error() == "chat not found" {
+
+      chat, err = createNewChat(input)
+      if err != nil {
+        return nil, errors.New("error creating new chat: " + err.Error()) 
+      }
+
+      err = useCase.ChatGateway.CreateChat(ctx, chat)
+      if err != nil {
+				return nil, errors.New("error persisting new chat: " + err.Error())
+			}
+
+    } else {
+      return nil, errors.New("error fetching existing chat: " + err.Error())
+    }
+
+  }
+
+  userMessage, err := entity.NewMessage("user", input.UserMessage, chat.Config.Model)
+  if err != nil {
+		return nil, errors.New("error creating user message: " + err.Error())
+	}
+
+  err = chat.AddMessage(userMessage)
+  if err != nil {
+		return nil, errors.New("error adding new message: " + err.Error())
+	}
+
+
+  messages := []openai.ChatCompletionMessage{}
+
+  for key, msg := range chat.Messages {
+    messages = append(messages, openai.ChatCompletionMessage{
+      Role: msg.Role,
+      Content: msg.Content,
+    })
+  }
+
+  resp, err := useCase.OpenAIClient.CreateChatCompletionStream(
+      ctx,
+      openai.ChatCompletionRequest{
+        Model: chat.Config.Model.Name,
+        Messages: messages,
+        MaxTokens: chat.Config.MaxTokens,
+        TopP: chat.Config.TopP,
+        PresencePenalty: chat.Config.PresencePenalty,
+        FrequencyPenalty: chat.Config.FrequencyPenalty,
+        Stop: chat.Config.Stop,
+        Stream: true,
+      },
+    )
+
+  if err != nil {
+		return nil, errors.New("error creating chat completion: " + err.Error())
+	}
+
+  var fullResponse strings.Builder
+
+  for {
+    response, err := resp.Recv()
+
+    if errors.Is(err, io.EOF){ break }
+    if err != nil {
+			return nil, errors.New("error streaming response: " + err.Error())
+		}
+    
+    fullResponse.WriteString(response.Choices[0].Delta.Content)
+    
+    r := ChatCompletionOutputDTO{
+      ChatID: chat.ID,
+      UserID: input.UserID,
+      Content: fullResponse.String(),
+    }
+
+    useCase.Stream <- r
+  }
+
+  assistant, err := entity.NewMessage("assistant", fullResponse.String(), chat.Config.Model)
+  if err != nil {
+		return nil, errors.New("error creating assistant message: " + err.Error())
+	}
+
+  err = chat.AddMessage(assistant)
+  if err != nil {
+		return nil, errors.New("error adding new message: " + err.Error())
+	}
+
+
+  err = useCase.ChatGateway.SaveChat(ctx, chat)
+  if err != nil {
+		return nil, errors.New("error saving chat: " + err.Error())
+	}
+  return &ChatCompletionOutputDTO {
+    ChatID: chat.ID,
+    UserID: input.UserID,
+    Content: fullResponse.String(),
+  }, nil
 }
 
 func createNewChat(input ChatCompletionInputDTO) (*entity.Chat, error) {
