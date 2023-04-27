@@ -65,5 +65,9 @@ func (c *Chat) GetMessages() []*Message {
 }
 
 func (c *Chat) CountMessages() int {
-	return len(c.Messages)
+  return len(c.Messages)
+}
+
+func (c *Chat) End() {
+	c.Status = "ended"
 }
