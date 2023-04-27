@@ -71,3 +71,10 @@ func (c *Chat) CountMessages() int {
 func (c *Chat) End() {
 	c.Status = "ended"
 }
+
+func (c *Chat) RefreshTokenUsage(){
+  c.TokenUsage = 0
+  for message := range c.Messages {
+    c.TokenUsage += c.Messages[message].GetQtdTokens()
+  }
+}
