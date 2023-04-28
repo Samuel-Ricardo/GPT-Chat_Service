@@ -13,7 +13,7 @@ import (
 
 type ChatCompletionConfigInputDTO struct {
 	Model                string
-	ModelMaxTokenx       int
+	ModelMaxTokens       int
 	Temperature          float32
 	TopP                 float32
 	N                    int
@@ -25,10 +25,10 @@ type ChatCompletionConfigInputDTO struct {
 }
 
 type ChatCompletionInputDTO struct {
-	ChatID      string
-	UserID      string
-	UserMessage string
-	Config      ChatCompletionConfigInputDTO
+	ChatID      string                       `json:"chat_id,omitempty"`
+	UserID      string                       `json:"user_id"`
+	UserMessage string                       `json:"user_message"`
+	Config      ChatCompletionConfigInputDTO `json:"config"`
 }
 
 type ChatCompletionOutputDTO struct {
@@ -156,7 +156,7 @@ func (useCase *ChatCompletionUseCase) Execute (ctx context.Context, input ChatCo
 }
 
 func createNewChat(input ChatCompletionInputDTO) (*entity.Chat, error) {
-  model := entity.NewModel(input.Config.Model, input.Config.ModelMaxTokenx)
+  model := entity.NewModel(input.Config.Model, input.Config.ModelMaxTokens)
 
   chatConfig := &entity.ChatConfig{
     Temperature:      input.Config.Temperature,
