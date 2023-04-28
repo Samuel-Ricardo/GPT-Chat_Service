@@ -132,12 +132,12 @@ func (q *Queries) FindChatByID(ctx context.Context, id string) (Chat, error) {
 	return i, err
 }
 
-const findErasedMessagesByChat = `-- name: FindErasedMessagesByChat :many
-SELECT id, chat_id, role, content, tokens, model, erased, order_msg, created_at FROM messages WHERE erased=1 AND chat_id = ? ORDER BY order_msg ASC
+const findErasedMessagesByChatID = `-- name: FindErasedMessagesByChatID :many
+SELECT id, chat_id, role, content, tokens, model, erased, order_msg, created_at FROM messages WHERE erased=1 and chat_id = ? order by order_msg asc
 `
 
-func (q *Queries) FindErasedMessagesByChat(ctx context.Context, chatID string) ([]Message, error) {
-	rows, err := q.db.QueryContext(ctx, findErasedMessagesByChat, chatID)
+func (q *Queries) FindErasedMessagesByChatID(ctx context.Context, chatID string) ([]Message, error) {
+	rows, err := q.db.QueryContext(ctx, findErasedMessagesByChatID, chatID)
 	if err != nil {
 		return nil, err
 	}

@@ -7,6 +7,7 @@ import (
 
 	"github.com/Samuel-Ricardo/GPT-Chat_Service/internal/domain/entity"
 	"github.com/Samuel-Ricardo/GPT-Chat_Service/internal/infra/db"
+	"golang.org/x/text/message"
 )
 
 
@@ -64,3 +65,60 @@ func (r *ChatRepositoryMySQL) CreateChat(ctx context.Context, chat *entity.Chat)
 
   return nil
 }
+
+func (r *ChatRepositoryMySQL) FindChatByID(ctx context.Context, chatID string) (*entity.Chat, errro) {
+  
+  chat := &entity.Chat{} 
+  
+  res, err := r.Queries.FindChatByID(ctx, chatID)
+  if err != nil {return  nil, errors.New("chat not found")}
+
+  chat.ID = res.ID
+  chat.UserID = res.UserID
+  chat.Status = res.Status
+  chat.TokenUsage = int(res.TokenUsage)
+  chat.Config = &entity.ChatConfig{
+    Model: &entity.Model {
+      Name: res.Model,
+      MaxTokens: int(res.ModelMaxTokens),
+    },
+    Temperature: float32(res.Temperature),
+    TopP: float32(res.TopP),
+    N: int(res.N),
+    Stop: []string{res.Stop},
+    MaxTokens: int(res.MaxTokens),
+    PresencePenalty: float32(res.PresencePenalty),
+    FrequencyPenalty: float32(res.FrequencyPenalty),
+  }
+
+  messages, err := r.Queries.FindMessagesByChatID(ctx, chatID)
+  if err != nil { return nil, err }
+
+  for key, message := range messages {
+    chat.Messages = append(chat.Messages, &entity.Message{
+      ID: message.ID,
+      Content: message.Content,
+      Role: message.Role,
+      Tokens: int(message.Tokens),
+      Model: &entity.Model{Name: message.Model},
+      CreatedAt: message.CreatedAt,
+    })
+  }
+
+  erasedMessages, err := r.Queries.FindErasedMessagesByChatID(ctx, chatID)
+  if err != nil {return nil,err}
+
+  for _, message := range erasedMessages {
+		chat.ErasedMessages = append(chat.ErasedMessages, &entity.Message{
+			ID:        message.ID,
+			Content:   message.Content,
+			Role:      message.Role,
+			Tokens:    int(message.Tokens),
+			Model:     &entity.Model{Name: message.Model},
+			CreatedAt: message.CreatedAt,
+		})
+	} 
+}
+
+
+
