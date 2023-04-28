@@ -36,7 +36,12 @@ type ChatcompletionUseCase struct {
   OpenAIClient *openai.Client
 }
 
-
+func NewChatCompletionUseCase (chatGateway gateway.ChatGateway, openAIClient *openai.Client) *ChatcompletionUseCase {
+  return &ChatcompletionUseCase {
+    ChatGateway: chatGateway,
+    OpenAIClient: openAIClient,
+  }
+}
 
 
 
