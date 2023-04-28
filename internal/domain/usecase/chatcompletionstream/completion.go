@@ -32,9 +32,9 @@ type ChatCompletionInputDTO struct {
 }
 
 type ChatCompletionOutputDTO struct {
-	ChatID  string
-	UserID  string
-	Content string
+	ChatID  string `json:"chat_id"`
+	UserID  string `json:"user_id"`
+	Content string `json:"content"`
 }
 
 type ChatCompletionUseCase struct {
