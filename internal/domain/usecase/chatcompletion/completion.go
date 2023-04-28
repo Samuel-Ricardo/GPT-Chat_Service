@@ -14,8 +14,10 @@ type ChatCompletionConfigInputDTO struct {
 }
 
 type ChatCompletionInputDTO struct {
-  ChatID string `json:"chat_id,omitempty"`
-  UserID string `json:"user_id"`
-  UserMessage string `json:"user_message"`
-  Config ChatCompletionConfigInputDTO `json:"Config"`
+	ChatID      string                       `json:"chat_id,omitempty"`
+	UserID      string                       `json:"user_id"`
+	UserMessage string                       `json:"user_message"`
+	Config      ChatCompletionConfigInputDTO `json:"Config"`
 }
+
+
