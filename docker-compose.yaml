@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  chatservice:
+    build: .
+    container_name: chatservice_app
+    volumes:
+      - .:/go/src
+    ports:
+      - "8081:8080"
+      - "50052:50051"
