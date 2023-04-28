@@ -1,0 +1,19 @@
+syntax = "proto3";
+package pb;
+option go_package = "internal/infra/grp/pb";
+
+message ChatRequest {
+  optional string chat_id = 1;
+  string user_id = 2;
+  string user_message = 3;
+}
+
+message ChatResponse {
+  string chat_id = 1;
+  string user_id = 2;
+  string coontent = 3;
+}
+
+service ChatService {
+  rpc ChatStream(ChatRequest) returns (stream ChatResponse) {}
+}
