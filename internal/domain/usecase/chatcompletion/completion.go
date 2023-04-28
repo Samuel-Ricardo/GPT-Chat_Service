@@ -1,6 +1,9 @@
 package chatcompletion
 
 import (
+	"errors"
+
+	"github.com/Samuel-Ricardo/GPT-Chat_Service/internal/domain/entity"
 	"github.com/Samuel-Ricardo/GPT-Chat_Service/internal/domain/gateway"
 	"github.com/sashabaranov/go-openai"
 )
@@ -44,4 +47,29 @@ func NewChatCompletionUseCase (chatGateway gateway.ChatGateway, openAIClient *op
 }
 
 
+func createNewChat(input ChatCompletionInputDTO) (*entity.Chat, error) {
+  model := entity.NewModel(input.Config.Model, input.Config.ModelMaxTokens)
+  chatConfig := &entity.ChatConfig{
+    Temperature:      input.Config.Temperature,
+		TopP:             input.Config.TopP,
+		N:                input.Config.N,
+		Stop:             input.Config.Stop,
+		MaxTokens:        input.Config.MaxTokens,
+		PresencePenalty:  input.Config.PresencePenalty,
+		FrequencyPenalty: input.Config.FrequencyPenalty,
+		Model:            model,
+  }
+
+  initalmessage, err := entity.NewMessage("system", input.Config.InitialSystemMessage, model)
+  if err != nil {
+		return nil, errors.New("error creating initial message: " + err.Error())
+	}
+
+  chat, err := entity.NewChat(input.UserID, initalmessage, chatConfig)
+  if err != nil {
+		return nil, errors.New("error creating new chat: " + err.Error())
+	}
+
+  return chat, nil;
+}
 
