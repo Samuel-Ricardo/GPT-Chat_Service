@@ -51,7 +51,7 @@ func NewChatCompletionUseCase(chatGateway gateway.ChatGateway, openAiClient *ope
   }
 }
 
-func (useCase *ChatCompletionUseCase) Execute (ctx context.Context, input ChatCompletionInputDTO) (*ChatCompletionInputDTO, error) {
+func (useCase *ChatCompletionUseCase) Execute (ctx context.Context, input ChatCompletionInputDTO) (*ChatCompletionOutputDTO, error) {
   chat, err := useCase.ChatGateway.FindChatByID(ctx, input.ChatID)
   
   if err != nil {
@@ -76,7 +76,7 @@ func (useCase *ChatCompletionUseCase) Execute (ctx context.Context, input ChatCo
 
   userMessage, err := entity.NewMessage("user", input.UserMessage, chat.Config.Model)
   if err != nil {
-		return nil, errors.New("error creating user message: " + err.Error())
+		return nil, errors.New("error creating new message: " + err.Error())
 	}
 
   err = chat.AddMessage(userMessage)
@@ -95,7 +95,7 @@ func (useCase *ChatCompletionUseCase) Execute (ctx context.Context, input ChatCo
   }
 
   resp, err := useCase.OpenAIClient.CreateChatCompletionStream(
-      ctx,
+      context.Background(),
       openai.ChatCompletionRequest{
         Model: chat.Config.Model.Name,
         Messages: messages,
@@ -109,7 +109,7 @@ func (useCase *ChatCompletionUseCase) Execute (ctx context.Context, input ChatCo
     )
 
   if err != nil {
-		return nil, errors.New("error creating chat completion: " + err.Error())
+		return nil, errors.New("error [OpenAI] creating chat completion: " + err.Error())
 	}
 
   var fullResponse strings.Builder
@@ -148,11 +148,13 @@ func (useCase *ChatCompletionUseCase) Execute (ctx context.Context, input ChatCo
   if err != nil {
 		return nil, errors.New("error saving chat: " + err.Error())
 	}
-  return &ChatCompletionOutputDTO {
+  output := &ChatCompletionOutputDTO {
     ChatID: chat.ID,
     UserID: input.UserID,
     Content: fullResponse.String(),
-  }, nil
+  }
+
+  return output, nil
 }
 
 func createNewChat(input ChatCompletionInputDTO) (*entity.Chat, error) {
