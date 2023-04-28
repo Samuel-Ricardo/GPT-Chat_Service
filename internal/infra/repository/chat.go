@@ -3,11 +3,11 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"time"
 
 	"github.com/Samuel-Ricardo/GPT-Chat_Service/internal/domain/entity"
 	"github.com/Samuel-Ricardo/GPT-Chat_Service/internal/infra/db"
-	"golang.org/x/text/message"
 )
 
 
@@ -66,7 +66,7 @@ func (r *ChatRepositoryMySQL) CreateChat(ctx context.Context, chat *entity.Chat)
   return nil
 }
 
-func (r *ChatRepositoryMySQL) FindChatByID(ctx context.Context, chatID string) (*entity.Chat, errro) {
+func (r *ChatRepositoryMySQL) FindChatByID(ctx context.Context, chatID string) (*entity.Chat, error) {
   
   chat := &entity.Chat{} 
   
@@ -117,8 +117,80 @@ func (r *ChatRepositoryMySQL) FindChatByID(ctx context.Context, chatID string) (
 			Model:     &entity.Model{Name: message.Model},
 			CreatedAt: message.CreatedAt,
 		})
-	} 
+	}
+  
+  return chat, nil
 }
 
+func (r *ChatRepositoryMySQL) SaveChat (ctx context.Context, chat *entity.Chat) error {
+  params := db.SaveChatParams{
+    ID:               chat.ID,
+		UserID:           chat.UserID,
+		Status:           chat.Status,
+		TokenUsage:       int32(chat.TokenUsage),
+		Model:            chat.Config.Model.Name,
+		ModelMaxTokens:   int32(chat.Config.Model.MaxTokens),
+		Temperature:      float64(chat.Config.Temperature),
+		TopP:             float64(chat.Config.TopP),
+		N:                int32(chat.Config.N),
+		Stop:             chat.Config.Stop[0],
+		MaxTokens:        int32(chat.Config.MaxTokens),
+		PresencePenalty:  float64(chat.Config.PresencePenalty),
+		FrequencyPenalty: float64(chat.Config.FrequencyPenalty),
+		UpdatedAt:        time.Now(),
+  }
 
+  err := r.Queries.SaveChat(ctx, params)
+  if err != nil {return err}
+
+  err = r.Queries.DeleteChatMessages(ctx, chat.ID)
+  if err != nil {return err}
+
+  err = r.Queries.DeleteErasedChatMessages(ctx, chat.ID)
+  if err != nil {return err}
+
+  iterator := 0
+
+
+  for _, message := range chat.Messages{
+    err = r.Queries.AddMessage(
+      ctx,
+      db.AddMessageParams{
+        ID: message.ID,
+        ChatID:    chat.ID,
+				Content:   message.Content,
+				Role:      message.Role,
+				Tokens:    int32(message.Tokens),
+				Model:     chat.Config.Model.Name,
+				CreatedAt: message.CreatedAt,
+				OrderMsg:  int32(iterator),
+				Erased:    false,
+      },
+    )
+    if err != nil {return err}
+    iterator++
+  }
+
+  iterator = 0
+  
+  for _, message := range chat.ErasedMessages {
+    err = r.Queries.AddMessage(
+      ctx,
+      db.AddMessageParams{
+        ID:        message.ID,
+				ChatID:    chat.ID,
+				Content:   message.Content,
+				Role:      message.Role,
+				Tokens:    int32(message.Tokens),
+				Model:     chat.Config.Model.Name,
+				CreatedAt: message.CreatedAt,
+				OrderMsg:  int32(iterator),
+				Erased:    true,
+      },
+    )
+    if err != nil {return err}
+    iterator++
+  }
+  return nil
+}
 
