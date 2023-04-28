@@ -1,6 +1,7 @@
 package chatcompletion
 
 import (
+	"context"
 	"errors"
 
 	"github.com/Samuel-Ricardo/GPT-Chat_Service/internal/domain/entity"
@@ -73,3 +74,85 @@ func createNewChat(input ChatCompletionInputDTO) (*entity.Chat, error) {
   return chat, nil;
 }
 
+
+
+
+func (uc *ChatcompletionUseCase) Execute(ctx context.Context, input ChatCompletionInputDTO) (*ChatCompletionOutputDTO, error) {
+  
+  chat, err := uc.ChatGateway.FindChatByID(ctx, input.ChatID)
+  
+  if err != nil {
+
+    if err.Error() == "chat not found" {
+      
+      chat, err = createNewChat(input)
+      if err != nil {
+				return nil, errors.New("error creating new chat: " + err.Error())
+			}
+
+
+      err = uc.ChatGateway.CreateChat(ctx, chat)
+      if err != nil {
+				return nil, errors.New("error persisting new chat: " + err.Error())
+			}
+    } else {
+      return nil, errors.New("error fetching existing chat: " + err.Error())
+    }
+  }
+
+
+  userMessage, err := entity.NewMessage("user", input.UserMessage, chat.Config.Model)
+  if err != nil {
+		return nil, errors.New("error creating new message: " + err.Error())
+	}
+
+  err = chat.AddMessage(userMessage)
+  if err != nil {
+		return nil, errors.New("error adding new message: " + err.Error())
+	}
+
+
+  messages := []openai.ChatCompletionMessage{}
+
+  for _, msg := range chat.Messages {
+    messages = append(messages, openai.ChatCompletionMessage{
+      Role: msg.Role,
+      Content: msg.Content,
+    })
+  }
+
+
+  resp, err := uc.OpenAIClient.CreateChatCompletion(
+    context.Background(),
+    openai.ChatCompletionRequest{
+      Model:            chat.Config.Model.Name,
+			Messages:         messages,
+			MaxTokens:        chat.Config.MaxTokens,
+			Temperature:      chat.Config.Temperature,
+			TopP:             chat.Config.TopP,
+			PresencePenalty:  chat.Config.PresencePenalty,
+			FrequencyPenalty: chat.Config.FrequencyPenalty,
+			Stop:             chat.Config.Stop,
+    },
+  )
+
+  if err != nil { return nil, errors.New("error openai: " + err.Error()) }
+
+  
+  assistant, err := entity.NewMessage("assistant", resp.Choices[0].Message.Content, chat.Config.Model)
+  if err != nil { return nil, err }
+
+  err = chat.AddMessage(assistant)
+  if err != nil { return nil, err }
+
+  err =  uc.ChatGateway.SaveChat(ctx, chat)
+  if err != nil { return nil, err }
+
+  output := &ChatCompletionOutputDTO {
+    ChatID: chat.ID,
+    UserID: input.UserID,
+    Content: resp.Choices[0].Message.Content,
+  }
+
+  return output, nil
+}
