@@ -8,4 +8,10 @@ type WebChatGPTHandler struct {
   AuthToken string
 }
 
-
+func NewWebChatGPTHandler(usecase chatcompletion.ChatcompletionUseCase, config chatcompletion.ChatCompletionConfigInputDTO, authToken string) *WebChatGPTHandler {
+  return &WebChatGPTHandler{
+    CompletionUseCase: usecase,
+    Config: config,
+    AuthToken: authToken,
+  }
+}
