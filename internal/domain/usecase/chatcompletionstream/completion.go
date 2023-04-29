@@ -87,7 +87,7 @@ func (useCase *ChatCompletionUseCase) Execute (ctx context.Context, input ChatCo
 
   messages := []openai.ChatCompletionMessage{}
 
-  for key, msg := range chat.Messages {
+  for _, msg := range chat.Messages {
     messages = append(messages, openai.ChatCompletionMessage{
       Role: msg.Role,
       Content: msg.Content,

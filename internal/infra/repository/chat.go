@@ -94,7 +94,7 @@ func (r *ChatRepositoryMySQL) FindChatByID(ctx context.Context, chatID string) (
   messages, err := r.Queries.FindMessagesByChatID(ctx, chatID)
   if err != nil { return nil, err }
 
-  for key, message := range messages {
+  for _, message := range messages {
     chat.Messages = append(chat.Messages, &entity.Message{
       ID: message.ID,
       Content: message.Content,
