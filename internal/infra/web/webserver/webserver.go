@@ -20,3 +20,7 @@ func NewWebServer(WebServerPort string) *WebServer {
   }
 }
 
+func (s *WebServer) AddHandler(path string, handler http.HandlerFunc) {
+  s.Handlers[path] = handler
+}
+
