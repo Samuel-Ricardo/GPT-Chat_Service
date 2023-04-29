@@ -23,7 +23,7 @@ func NewWebChatGPTHandler(usecase chatcompletion.ChatcompletionUseCase, config c
 }
 
 
-func (handler *WebChatGPTHandler) handle(w http.ResponseWriter, r *http.Request) {
+func (handler *WebChatGPTHandler) Handle(w http.ResponseWriter, r *http.Request) {
   
   if r.Method != http.MethodPost {
     w.WriteHeader(http.StatusMethodNotAllowed)
