@@ -22,4 +22,6 @@ COPY . .
 RUN cd /go/pkg/mod/github.com/j178/tiktoken-go@v0.2.1/tiktoken-cffi && \
     cargo build --release
 
-CMD ["tail", "-f", "/dev/null"]
+#CMD ["tail", "-f", "/dev/null"]
+RUN go mod tidy
+CMD ["go", "run", "cmd/chatservice/main.go"]
