@@ -19,3 +19,40 @@ func NewChatService(chatCompletionStreamUseCase chatcompletionstream.ChatComplet
 		StreamChannel:               streamChannel,
 	}
 }
+
+func (chat *ChatService) ChatStream(req *pb.ChatRequest, stream pb.ChatService_ChatStreamServer) error {
+  chatConfig := chatcompletionstream.ChatCompletionConfigInputDTO{
+    Model:                chat.ChatConfigStream.Model,
+		ModelMaxTokens:       chat.ChatConfigStream.ModelMaxTokens,
+		Temperature:          chat.ChatConfigStream.Temperature,
+		TopP:                 chat.ChatConfigStream.TopP,
+		N:                    chat.ChatConfigStream.N,
+		Stop:                 chat.ChatConfigStream.Stop,
+		MaxTokens:            chat.ChatConfigStream.MaxTokens,
+		InitialSystemMessage: chat.ChatConfigStream.InitialSystemMessage,
+  }
+
+  input := chatcompletionstream.ChatCompletionInputDTO{
+    UserMessage:  req.GetUserMessage(),
+    UserID:       req.GetUserId(),
+    ChatID:       req.GetChatId(),
+    Config:       chatConfig,
+  }
+
+  ctx := stream.Context()
+  go func () {
+    for msg := range chat.StreamChannel {
+      stream.Send(&pb.ChatResponse{
+        ChatId : msg.ChatID,
+        UserId : msg.UserID,
+        Content: msg.Content,
+      })
+    }
+  }()
+
+  
+  _,err := chat.ChatCompletionStreamUseCase.Execute(ctx, input)
+  if err != nil { return err }
+
+  return nil
+}
