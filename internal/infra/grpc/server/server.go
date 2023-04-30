@@ -4,7 +4,8 @@ import (
 	"net"
 
 	"github.com/Samuel-Ricardo/GPT-Chat_Service/internal/domain/usecase/chatcompletionstream"
-	"github.com/Samuel-Ricardo/GPT-Chat_Service/internal/infra/grpc/service"
+	"github.com/Samuel-Ricardo/GPT-Chat_Service/internal/infra/grpc/pb"
+  "github.com/Samuel-Ricardo/GPT-Chat_Service/internal/infra/grpc/service" 
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -61,14 +62,14 @@ func (g *GRPCServer) Start() error {
     grpc.StreamInterceptor(g.AuthInterceptor),
   }
 
-  grpcServer = grpc.NewServer(opts...)
-  pb.RegisterChatServiceServer(grpcServer.ChatService)
+  grpcServer := grpc.NewServer(opts...)
+  pb.RegisterChatServiceServer(grpcServer, &g.ChatService)
   reflection.Register(grpcServer)
 
   listen, err := net.Listen("tcp", ":"+g.Port)
   if err != nil { panic(err.Error()) }
 
-  if err := grpcServer.Server(listen); err != nil { panic(err.Error()) }
+  if err := grpcServer.Serve(listen); err != nil { panic(err.Error()) }
 
   return nil
 } 
