@@ -90,7 +90,7 @@ type ChatResponse struct {
 
 	ChatId   string `protobuf:"bytes,1,opt,name=chat_id,json=chatId,proto3" json:"chat_id,omitempty"`
 	UserId   string `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	Coontent string `protobuf:"bytes,3,opt,name=coontent,proto3" json:"coontent,omitempty"`
+	Content string `protobuf:"bytes,3,opt,name=coontent,proto3" json:"coontent,omitempty"`
 }
 
 func (x *ChatResponse) Reset() {
@@ -141,7 +141,7 @@ func (x *ChatResponse) GetUserId() string {
 
 func (x *ChatResponse) GetCoontent() string {
 	if x != nil {
-		return x.Coontent
+		return x.Content
 	}
 	return ""
 }
