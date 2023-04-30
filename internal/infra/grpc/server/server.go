@@ -1,12 +1,14 @@
 package server
 
 import (
+	"net"
+
 	"github.com/Samuel-Ricardo/GPT-Chat_Service/internal/domain/usecase/chatcompletionstream"
 	"github.com/Samuel-Ricardo/GPT-Chat_Service/internal/infra/grpc/service"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
-  "google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
 )
@@ -53,3 +55,20 @@ func (g *GRPCServer) AuthInterceptor(server interface{}, serverStream grpc.Serve
 
   return handler(server, serverStream)
 }
+
+func (g *GRPCServer) Start() error {
+  opts := []grpc.ServerOption{
+    grpc.StreamInterceptor(g.AuthInterceptor),
+  }
+
+  grpcServer = grpc.NewServer(opts...)
+  pb.RegisterChatServiceServer(grpcServer.ChatService)
+  reflection.Register(grpcServer)
+
+  listen, err := net.Listen("tcp", ":"+g.Port)
+  if err != nil { panic(err.Error()) }
+
+  if err := grpcServer.Server(listen); err != nil { panic(err.Error()) }
+
+  return nil
+} 
