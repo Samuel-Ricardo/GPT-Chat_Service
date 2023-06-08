@@ -11,7 +11,7 @@ message ChatRequest {
 message ChatResponse {
   string chat_id = 1;
   string user_id = 2;
-  string coontent = 3;
+  string content = 3;
 }
 
 service ChatService {
