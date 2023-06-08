@@ -1,6 +1,8 @@
 package service
 
 import (
+	"fmt"
+
 	"github.com/Samuel-Ricardo/GPT-Chat_Service/internal/domain/usecase/chatcompletionstream"
 	"github.com/Samuel-Ricardo/GPT-Chat_Service/internal/infra/grpc/pb"
 )
@@ -42,6 +44,9 @@ func (chat *ChatService) ChatStream(req *pb.ChatRequest, stream pb.ChatService_C
   ctx := stream.Context()
   go func () {
     for msg := range chat.StreamChannel {
+ 
+      fmt.Println(msg)
+
       stream.Send(&pb.ChatResponse{
         ChatId : msg.ChatID,
         UserId : msg.UserID,
