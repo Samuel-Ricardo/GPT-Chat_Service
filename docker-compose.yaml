@@ -11,6 +11,10 @@ services:
       - "50052:50051"
     depends_on:
       - mysql
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
+    networks:
+      - next_gpt
 
   mysql:
     image: mysql:8
@@ -24,3 +28,11 @@ services:
       - 3306:3306
     volumes:
       - .docker/mysql:/var/lib/mysql
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
+    networks:
+      - next_gpt
+
+networks:
+  next_gpt:
+    external: true
