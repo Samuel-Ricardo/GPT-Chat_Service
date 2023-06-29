@@ -58,13 +58,15 @@
   <img width="128px" src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzKsNo97qflGoKifTQP6ztDT9tM-k2SIVsz7KV5vPsB0opSP00nLG6UIyy3oFSZDLkztA&usqp=CAU" />
   <img width="128px" src = "https://res.cloudinary.com/practicaldev/image/fetch/s--TpDTGYw5--/c_imagga_scale,f_auto,fl_progressive,h_900,q_auto,w_1600/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/yuxiptjqj8pa4bvyffym.png" />
   <img width="128px" src = "https://devtools.com.br/blog/wp-content/uploads/2013/06/MySQL-Logo.wine_.png" />
+  <img width="128px" src = "https://grpc.io/img/logos/grpc-icon-color.png" /> 
+  <img width="128px" src = "https://www.materialize.pro/wp-content/uploads/2021/10/GOLANG.png" /> 
 </p>
 
 <br>
 <br>
 
 <p align="justify">
-  This microsservice propurse it's basically connect with Chat-GPT and handle with this data. Creating and managing Chats, receiving a message and calculating a response, all communication doesnt use JSON's but gRCP that is more fast, light and economic. Using MySQL as DataBase.
+  This microsservice propurse it's basically connect with Chat-GPT and handle with this data. Creating and managing Chats, receiving a message and calculating a response, all communication doesn't use REST & JSON's but gRCP that is more fast, light and economic. Using MySQL as DataBase.
 </p>
 
 > <a href="https://github.com/Samuel-Ricardo" target="_blank"> <img src="./readme_files/app_preview.png"> </a>
@@ -84,4 +86,38 @@
 
 <h2 id="techs">
   :building_construction: | Technologies and Concepts Studied:
+</h2>
+
+> <a href="https://openai.com/chatgpt" target="_blank"> <img width="128px" src = "https://anch.ai/wp-content/uploads/2023/04/blog-new-chatgpt.png" /> </a>
+
+> <a href="https://go.dev/" target="_blank"> <img width="248px" src = "https://camo.githubusercontent.com/2b507540e2681c1a25698f246b9dca69c30548ed66a7323075b0224cbb1bf058/68747470733a2f2f676f6c616e672e6f72672f646f632f676f706865722f6669766579656172732e6a7067" /> </a>
+
+<br>
+<br>
+
+- Go Lang
+- Chat-GPT - [OpenAI]
+- Docker
+- gRPC
+- Protobuf
+- Performance
+- MySQL
+- Tiktoken
+- Viper
+- uuid
+- Gotenv
+- Chi
+- Streams
+- Real Time
+- Multi Thread & Concurrency
+- Scalability
+
+> Among Others...
+
+<br>
+
+#
+
+<h2 id="app">
+  💻 | Application:
 </h2>
