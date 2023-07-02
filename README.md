@@ -118,6 +118,18 @@
 
 #
 
+<h2 id="app">
+  💻 | Application:
+</h2>
+
+> <a href="https://github.com/Samuel-Ricardo/NextGPT" target="_blank"> <img src="./readme_files/app_preview_chat.png" width="1280px"/> </a>
+
+<p>
+ This API open a webserver stream connection that receive chat status and datas in real time from Front-End, connect with Chat-GPT using OpenAI Client and send a "pre-message" that gives to GPT a little context of this chat, storage the messages and tokens in order, calculate the specific used model token limit and when hit the token limit i keep in other storage the old tokens, it gives to us a best control of GPT context and avoid unforeseens and extra expenses, with this in mund, the API connect with MySQL Database to create or update the current chat and messages. GPT-Chat will read all valid tokens and analize the chat context to give a response incrementally, so the API will receive from GPT and send to Front-End piece by piece of GPT response in real time
+</p>
+
+#
+
 <h2 id="author">
   :octocat: | Author:  
 </h2>
