@@ -222,7 +222,7 @@ Once Docker is setup, we can start the project :D
   $ MySQL: http://localhost:3306
 
   $ API - REST: http://localhost:8081
-  $ API - STREAMS: http://localhost:50052
+  $ API - gRPC: localhost:50052
 
   See more: ./docker-compose.yaml
 
