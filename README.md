@@ -129,7 +129,7 @@
 </p>
 
 <p>
-This API is a Hybrid and support a REST connection, but i recomend to use streams for a incremental experience.
+This API is a Hybrid and support a REST connection, but i recomend to use gRPC for a better experience.
 </p>
 
 API Examples: ./api/chat.http
@@ -240,7 +240,7 @@ First, you need to setup the GO Lang Microsservice, click on image bellow to set
 
 Now, you can setup this NextJS App, click on image bellow to setup it
 
-> <a target="_blank" href="https://github.com/Samuel-Ricardo/NextGPT#run-project"> <img width="128px" src="https://pbs.twimg.com/card_img/1669374288581853186/RoVDMNTV?format=jpg&name=4096x4096"/> </a>
+> <a target="_blank" href="https://github.com/Samuel-Ricardo/NextGPT#run-project"> <img width="128px" src="https://wallpapercave.com/dwp1x/wp11846969.jpg"/> </a>
 
 #
 
