@@ -134,6 +134,8 @@ This API is a Hybrid and support a REST connection, but i recomend to use stream
 
 API Examples: ./api/chat.http
 
+```bash
+
 ###
 
 POST http://localhost:8081/chat HTTP/1.1
@@ -168,6 +170,7 @@ Authorization: 123456
 }
 
 ###
+```
 
 #
 
