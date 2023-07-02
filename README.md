@@ -128,6 +128,122 @@
  This API open a webserver stream connection that receive chat status and datas in real time from Front-End, connect with Chat-GPT using OpenAI Client and send a "pre-message" that gives to GPT a little context of this chat, storage the messages and tokens in order, calculate the specific used model token limit and when hit the token limit i keep in other storage the old tokens, it gives to us a best control of GPT context and avoid unforeseens and extra expenses, with this in mund, the API connect with MySQL Database to create or update the current chat and messages. GPT-Chat will read all valid tokens and analize the chat context to give a response incrementally, so the API will receive from GPT and send to Front-End piece by piece of GPT response in real time
 </p>
 
+<p>
+This API is a Hybrid and support a REST connection, but i recomend to use streams for a incremental experience.
+</p>
+
+API Examples: ./api/chat.http
+
+###
+
+POST http://localhost:8081/chat HTTP/1.1
+Content-Type: application/json
+Authorization: 123456
+
+{
+"user_id": "1",
+"user_message": "Olá, qual é o seu nome?"
+}
+
+###
+
+POST http://localhost:8081/chat HTTP/1.1
+Content-Type: application/json
+Authorization: 123456
+
+{
+"chat_id": "a14fc851-7e95-49b5-a5b5-44479434becd",
+"user_id": "1",
+"user_message": "Quero saber mais sobre arquitetura de software"
+}
+
+POST http://localhost:8081/chat HTTP/1.1
+Content-Type: application/json
+Authorization: 123456
+
+{
+"chat_id": "a14fc851-7e95-49b5-a5b5-44479434becd",
+"user_id": "1",
+"user_message": "continue"
+}
+
+###
+
+#
+
+<h2 id="run-project"> 
+   👨‍💻 | How to use
+</h2>
+
+<br>
+
+### Open your Git Terminal and clone this repository
+
+```git
+  $ git clone "git@github.com:Samuel-Ricardo/GPT-Chat_Service.git"
+```
+
+### Make Pull
+
+```git
+  $ git pull "git@github.com:Samuel-Ricardo/GPT-Chat_Service.git"
+```
+
+<br>
+
+This application use `Docker` so you dont need to install and cofigurate anything other than docker on your machine.
+
+> <a target="_blank" href="https://www.docker.com/"> <img width="48px" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-plain-wordmark.svg" /> </a>
+
+<br>
+
+Once Docker is setup, we can start the project :D
+
+</p>
+
+```bash
+
+  # After setup docker environment just run this commmand on root project folder:
+
+  $ docker-compose up --build   # For First Time run this command
+
+  $ docker-compose up           # to run project
+
+
+```
+
+```bash
+
+  #Apps Running on:
+
+  $ MySQL: http://localhost:3306
+
+  $ API - REST: http://localhost:8081
+  $ API - STREAMS: http://localhost:50052
+
+  See more: ./docker-compose.yaml
+
+```
+
+<br>
+
+<h2> 
+   👨‍💻 | How to run the full project
+</h2>
+
+First, you need to setup the GO Lang Microsservice, click on image bellow to setup it
+
+> <a target="_blank" href="https://github.com/Samuel-Ricardo/GPT-Chat_Service#------how-to-use"> <img width="128px" src="https://cdn.thenewstack.io/media/2022/05/57bb2a1f-golang.png"/> </a>
+
+Now, you can setup this NextJS App, click on image bellow to setup it
+
+> <a target="_blank" href="https://github.com/Samuel-Ricardo/NextGPT#run-project"> <img width="128px" src="https://pbs.twimg.com/card_img/1669374288581853186/RoVDMNTV?format=jpg&name=4096x4096"/> </a>
+
+#
+
+<br>
+<br>
+
 #
 
 <h2 id="author">
