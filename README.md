@@ -6,10 +6,10 @@
   </a> 
 </p>
 
-<h4 align="center" >🚀 🟨 Full Cycle Imerssion - 2023 🟨 🚀</h4>
+<h4 align="center" >🚀 🟨 Full Cycle Learning Experience - 2023 🟨 🚀</h4>
 
 <h4 align="center">
-  Application developed during a Programmer Event, the <a style="color: #8a4af3;" href="https://github.com/search?q=imers%C3%A3o%20full%20cycle&type=repositories" target="_blank">Full Cycle Immersion</a> promoted by <a style="color: #8a4af3;" href="https://fullcycle.com.br/" target="_blank">@FullCycleSchool</a>
+Application developed during a Programmer Event, the <a style="color: #8a4af3;" href="https://github.com/search?q=full%20cycle%20learning%20experience&type=repositories" target="_blank">Full Cycle Learning Experience</a> promoted by <a style="color: #8a4af3;" href="https://fullcycle.com.br/" target="_blank">@FullCycleSchool</a>
 </h4>
 
 #
@@ -227,6 +227,8 @@ Once Docker is setup, we can start the project :D
   See more: ./docker-compose.yaml
 
 ```
+
+- You need to set your own GPT data on `.env`, get a free API key from OpenAI [ [Click Here](https://auth0.openai.com/u/signup/identifier?state=hKFo2SBiSEVoVDgxV20ybk1KdE9LQUk5R2xLRmRMMTRiWTFCeqFur3VuaXZlcnNhbC1sb2dpbqN0aWTZIGdRSXBEc1k1eC1DMHVnV1Z5bDlVZmR1NEwzdENuN1Vno2NpZNkgRFJpdnNubTJNdTQyVDNLT3BxZHR3QjNOWXZpSFl6d0Q) ].
 
 <br>
 
